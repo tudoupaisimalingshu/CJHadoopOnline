@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!-- Spring config -->
+<beans
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:context="http://www.springframework.org/schema/context"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd    
+                http://www.springframework.org/schema/context    
+                 http://www.springframework.org/schema/context/spring-context-3.2.xsd    
+                http://www.springframework.org/schema/tx     
+                http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+
+	<!-- after config this then can user annotation  -->
+	<context:component-scan base-package="com.chenjie"/>
+
+	<!-- if no config up , should config down -->
+ 	<!-- <bean id="userService" class="com.chenjie.service.impl.UserServiceImpl"></bean> -->
+  
+  <!-- 以下是Spring集成mybatis -->
+
+	<!-- 1. 数据源 : DriverManagerDataSource -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://192.168.20.1:3306/chat605?useUnicode=true&amp;characterEncoding=utf-8"/>
+		<property name="username" value="root"/>
+		<property name="password" value="root"/>
+	</bean>
+	
+	<!-- 2. mybatis 的 SqlSession 的工厂: SqlSessionFactoryBean -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="typeAliasesPackage" value="com.chenjie.pojo"/>
+	</bean>
+	
+	<!-- 3. mybatis 自动扫描加载 Sql 映射文件 : MapperScannerConfigurer -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.chenjie.mapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<!-- 4. 事务管理 : DataSourceTransactionManager -->
+	<bean  id="txManager"
+	class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+  	</bean>
+  	
+	<!-- 5. 使用声明式事务 -->
+	<tx:annotation-driven transaction-manager="txManager" />
+
+</beans>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chenjie.mapper.UserMapper">
+	<select id="findById" resultType="User">
+		select *
+		from t_user
+		where u_username = #{id}
+	</select>
+	
+	<select id="findByIdAndPsw" resultType="User" parameterType="User">
+		select *
+		from t_user
+		where u_username = #{u_username} and u_password = #{u_password}
+	</select>
+	
+	<insert id="register" parameterType="User">
+		insert into t_user(u_username,u_nickname,u_password,u_alive,u_role)
+		values(#{u_username},#{u_nickname},#{u_password},#{u_alive},#{u_role})
+	</insert>
+</mapper>
